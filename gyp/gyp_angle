@@ -28,6 +28,8 @@ def appendCommonArgs(args):
     # Add common.gypi to the include path.
     args.append('-I' + os.path.join(script_dir, 'common.gypi'))
     args.append('--no-parallel')
+    args.append('-f')
+    args.append('ninja')
 
 def generateProjects(generate_args):
     args = generate_args
