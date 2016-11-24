@@ -9,6 +9,17 @@
         'spirv_headers_path': '../../third_party/spirv-headers/src',
         'spirv_tools_path': '../../third_party/spirv-tools-angle/src',
         'vulkan_layers_path': '../../third_party/vulkan-validation-layers/src',
+        'conditions':
+        [
+            ['OS=="win"',
+            {
+                'vulkan_wsi': 'Win32',
+            }],
+            ['OS=="linux"',
+            {
+                'vulkan_wsi': 'Xcb',
+            }],
+        ],
         'vulkan_loader_sources':
         [
             '<(vulkan_layers_path)/loader/cJSON.c',
@@ -183,6 +194,16 @@
             '<(vulkan_layers_path)/layers/windows/VkLayer_threading.json',
             '<(vulkan_layers_path)/layers/windows/VkLayer_unique_objects.json',
         ],
+        'vulkan_gen_json_files_sources_linux':
+        [
+            '<(vulkan_layers_path)/layers/linux/VkLayer_core_validation.json',
+            '<(vulkan_layers_path)/layers/linux/VkLayer_image.json',
+            '<(vulkan_layers_path)/layers/linux/VkLayer_object_tracker.json',
+            '<(vulkan_layers_path)/layers/linux/VkLayer_parameter_validation.json',
+            '<(vulkan_layers_path)/layers/linux/VkLayer_swapchain.json',
+            '<(vulkan_layers_path)/layers/linux/VkLayer_threading.json',
+            '<(vulkan_layers_path)/layers/linux/VkLayer_unique_objects.json',
+        ],
         'vulkan_gen_json_files_outputs':
         [
             '<(angle_gen_path)/vulkan/json/VkLayer_core_validation.json',
@@ -260,6 +281,13 @@
                                     'VK_USE_PLATFORM_WIN32_KHR',
                                 ],
                             }],
+                            ['OS=="linux"',
+                            {
+                                'defines':
+                                [
+                                    'VK_USE_PLATFORM_XCB_KHR',
+                                ],
+                            }],
                         ],
                     },
                     'conditions':
@@ -274,6 +302,18 @@
                             'defines':
                             [
                                 'VK_USE_PLATFORM_WIN32_KHR',
+                            ],
+                        }],
+                        ['OS=="linux"',
+                        {
+                            'cflags':
+                            [
+                                '-include',
+                                '<(angle_gen_path)/vulkan/angle_loader.h',
+                            ],
+                            'defines':
+                            [
+                                'VK_USE_PLATFORM_XCB_KHR',
                             ],
                         }],
                     ],
@@ -446,6 +486,13 @@
                                 'VK_USE_PLATFORM_WIN32_KHR',
                             ],
                         }],
+                        ['OS=="linux"',
+                        {
+                            'defines':
+                            [
+                                'VK_USE_PLATFORM_XCB_KHR',
+                            ],
+                        }],
                     ],
                     'direct_dependent_settings':
                     {
@@ -505,6 +552,13 @@
                                     },
                                 },
                             }],
+                            ['OS=="linux"',
+                            {
+                                'defines':
+                                [
+                                    'VK_USE_PLATFORM_XCB_KHR',
+                                ],
+                            }],
                         ],
                     },
                 },
@@ -532,8 +586,7 @@
                             ],
                             'action':
                             [
-                                # TODO(jmadill): Select correct display server for Linux/Android/etc.
-                                'python', '<(vulkan_layers_path)/scripts/vk-generate.py', 'Win32',
+                                'python', '<(vulkan_layers_path)/scripts/vk-generate.py', '<(vulkan_wsi)',
                                 'dispatch-table-ops', 'layer', '<(angle_gen_path)/vulkan/vk_dispatch_table_helper.h',
                             ],
                         },
@@ -606,6 +659,18 @@
                                     [
                                         'python', '<(angle_path)/scripts/generate_vulkan_layers_json.py',
                                         '<(vulkan_layers_path)/layers/windows', '<(angle_gen_path)/vulkan/json', '<(PRODUCT_DIR)',
+                                    ],
+                                }],
+                                ['OS=="linux"',
+                                {
+                                    'inputs':
+                                    [
+                                        '<@(vulkan_gen_json_files_sources_linux)',
+                                    ],
+                                    'action':
+                                    [
+                                        'python', '<(angle_path)/scripts/generate_vulkan_layers_json.py',
+                                        '<(vulkan_layers_path)/layers/linux', '<(angle_gen_path)/vulkan/json', '<(PRODUCT_DIR)',
                                     ],
                                 }],
                             ],

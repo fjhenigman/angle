@@ -156,9 +156,11 @@ vk::Error RendererVk::initialize(const egl::AttributeMap &attribs)
     enabledInstanceExtensions.push_back(VK_KHR_SURFACE_EXTENSION_NAME);
 #if defined(ANGLE_PLATFORM_WINDOWS)
     enabledInstanceExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
+#elif defined(ANGLE_PLATFORM_LINUX)
+    enabledInstanceExtensions.push_back(VK_KHR_XCB_SURFACE_EXTENSION_NAME);
 #else
 #error Unsupported Vulkan platform.
-#endif  // defined(ANGLE_PLATFORM_WINDOWS)
+#endif  // defined(ANGLE_PLATFORM_WINDOWS) || defined(ANGLE_PLATFORM_LINUX)
 
     // TODO(jmadill): Should be able to continue initialization if debug report ext missing.
     if (mEnableValidationLayers)
