@@ -21,7 +21,7 @@ def fixpath(inpath):
     return os.path.relpath(inpath).replace('\\', '/')
 
 def all_paths(inpath):
-    return fixpath(inpath) + ";" + fixpath(os.path.join("..", fixpath(inpath)))
+    return fixpath(inpath) + os.path.pathsep + fixpath(os.path.join("..", fixpath(inpath)))
 
 with open(output_file, "w") as outfile:
     outfile.write("#define LAYERS_SOURCE_PATH \"" + all_paths(layers_source_path) + "\"\n")
