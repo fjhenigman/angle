@@ -12,12 +12,16 @@
 vars = {
   'android_git': 'https://android.googlesource.com',
   'deqp_revision': 'f4f3d8079e7a37d7675ab93583e6438d0bca0e58',
+  'vulkan_revision': '4c1ceb0b8e4f051310953cfb22b11af419258682',
 }
 
 deps_os = {
   'win': {
     'src/third_party/deqp/src':
       Var('android_git') + '/platform/external/deqp@' + Var('deqp_revision'),
+
+    'src/third_party/vulkan-validation-layers/src':
+      Var('android_git') + '/platform/external/vulkan-validation-layers@' + Var('vulkan_revision'),
   },
   'unix': {
     'src/third_party/deqp/src':

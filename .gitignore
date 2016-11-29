@@ -28,6 +28,7 @@ debug.txt
 /third_party/deqp/src
 /third_party/gyp
 /third_party/libpng
+/third_party/vulkan-validation-layers/src
 /third_party/zlib
 /src/tests/third_party/gles_conformance_tests
 out
@@ -44,4 +45,5 @@ TestResults.qpa
 buildtools/
 *.pyc
 *.TMP
+*.VC.db
 
