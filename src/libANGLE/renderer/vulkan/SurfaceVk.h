@@ -10,7 +10,10 @@
 #ifndef LIBANGLE_RENDERER_VULKAN_SURFACEVK_H_
 #define LIBANGLE_RENDERER_VULKAN_SURFACEVK_H_
 
+#include <vulkan/vulkan.h>
+
 #include "libANGLE/renderer/SurfaceImpl.h"
+#include "libANGLE/renderer/vulkan/renderervk_utils.h"
 
 namespace rx
 {
@@ -55,7 +58,10 @@ class WindowSurfaceVk : public SurfaceImpl
   public:
     WindowSurfaceVk(const egl::SurfaceState &surfaceState,
                     RendererVk *renderer,
-                    EGLNativeWindowType window);
+                    const egl::Config &config,
+                    EGLNativeWindowType window,
+                    EGLint width,
+                    EGLint height);
     ~WindowSurfaceVk() override;
 
     egl::Error initialize() override;
@@ -78,7 +84,27 @@ class WindowSurfaceVk : public SurfaceImpl
                                         FramebufferAttachmentRenderTarget **rtOut) override;
 
   private:
+    struct SwapchainImage final : angle::NonCopyable
+    {
+        SwapchainImage();
+        SwapchainImage(vk::Image &&image, vk::ImageView &&view);
+        SwapchainImage(SwapchainImage &&other);
+        SwapchainImage &operator=(SwapchainImage &&other);
+
+        vk::Image image;
+        vk::ImageView view;
+    };
+
+    vk::Error initializeImpl();
+
     RendererVk *mRenderer;
+    const egl::Config &mConfig;
+    EGLNativeWindowType mNativeWindowType;
+    EGLint mWidth;
+    EGLint mHeight;
+    VkSurfaceKHR mSurface;
+    VkSwapchainKHR mSwapchain;
+    std::vector<SwapchainImage> mSwapchainImages;
 };
 
 }  // namespace rx

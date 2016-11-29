@@ -10,6 +10,7 @@
 #ifndef LIBANGLE_RENDERER_VULKAN_RENDERERVK_H_
 #define LIBANGLE_RENDERER_VULKAN_RENDERERVK_H_
 
+#include <memory>
 #include <vulkan/vulkan.h>
 
 #include "common/angleutils.h"
@@ -32,9 +33,20 @@ class RendererVk : angle::NonCopyable
 
     vk::Error initialize(const egl::AttributeMap &attribs);
 
+    std::string getVendorString() const;
     std::string getRendererDescription() const;
 
     VkInstance getInstance() const { return mInstance; }
+    VkPhysicalDevice getPhysicalDevice() const { return mPhysicalDevice; }
+    VkDevice getDevice() const { return mDevice; }
+
+    vk::Error selectGraphicsQueue();
+    vk::ErrorOrResult<uint32_t> selectPresentQueueForSurface(VkSurfaceKHR surface);
+
+    // TODO(jmadill): Use ContextImpl for command buffers to enable threaded contexts.
+    vk::CommandBuffer *getCommandBuffer();
+    vk::Error queueAndFinishCommandBuffer(const vk::CommandBuffer &commandBuffer,
+                                          uint64_t timeoutMS);
 
     const gl::Caps &getNativeCaps() const;
     const gl::TextureCapsMap &getNativeTextureCaps() const;
@@ -54,9 +66,19 @@ class RendererVk : angle::NonCopyable
     mutable gl::Extensions mNativeExtensions;
     mutable gl::Limitations mNativeLimitations;
 
+    vk::Error initializeDevice(uint32_t queueFamilyIndex);
+
     VkInstance mInstance;
     bool mEnableValidationLayers;
     VkDebugReportCallbackEXT mDebugReportCallback;
+    VkPhysicalDevice mPhysicalDevice;
+    VkPhysicalDeviceProperties mPhysicalDeviceProperties;
+    std::vector<VkQueueFamilyProperties> mQueueFamilyProperties;
+    VkQueue mQueue;
+    uint32_t mCurrentQueueFamilyIndex;
+    VkDevice mDevice;
+    VkCommandPool mCommandPool;
+    std::unique_ptr<vk::CommandBuffer> mCommandBuffer;
 };
 
 }  // namespace rx
