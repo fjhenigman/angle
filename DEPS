@@ -21,11 +21,20 @@ deps = {
   'third_party/deqp/src':
     Var('android_git') + '/platform/external/deqp' + '@' + 'f4f3d8079e7a37d7675ab93583e6438d0bca0e58',
 
+  'third_party/glslang-angle/src':
+    Var('android_git') + '/platform/external/shaderc/glslang' + '@' + 'fabe7d6a613782d49becaef86aa0161ed7d3c4d7',
+
   'third_party/gyp':
     Var('chromium_git') + '/external/gyp' + '@' + '81c2e5ff92af29bab61c982808076ddce3d200a2',
 
   'third_party/libpng':
     Var('android_git') + '/platform/external/libpng' + '@' + '094e181e79a3d6c23fd005679025058b7df1ad6c',
+
+  'third_party/spirv-headers/src':
+    Var('android_git') + '/platform/external/shaderc/spirv-headers' + '@' + 'bd47a9abaefac00be692eae677daed1b977e625c',
+
+  'third_party/spirv-tools-angle/src':
+    Var('android_git') + '/platform/external/shaderc/spirv-tools' + '@' + 'bf190ec8393eadc4876de7306eef951956455ab1',
 
   'third_party/vulkan-validation-layers/src':
     Var('android_git') + '/platform/external/vulkan-validation-layers' + '@' + '4c1ceb0b8e4f051310953cfb22b11af419258682',
