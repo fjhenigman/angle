@@ -106,6 +106,11 @@ TEST_P(RendererTest, RequestedRendererCreated)
         ASSERT_TRUE(IsNULL());
     }
 
+    if (platform.renderer == EGL_PLATFORM_ANGLE_TYPE_VULKAN_ANGLE)
+    {
+        ASSERT_TRUE(IsVulkan());
+    }
+
     EGLint glesMajorVersion = GetParam().majorVersion;
 
     // Ensure that the renderer string contains GL ES 3.0, if we requested a GL ES 3.0
@@ -127,6 +132,13 @@ TEST_P(RendererTest, SimpleOperation)
     if (IsNULL())
     {
         std::cout << "ANGLE NULL backend clears are not functional" << std::endl;
+        return;
+    }
+
+    // TODO(jmadil): Vulkan clear.
+    if (IsVulkan())
+    {
+        std::cout << "Vulkan clears not yet implemented" << std::endl;
         return;
     }
 
@@ -222,5 +234,9 @@ ANGLE_INSTANTIATE_TEST(RendererTest,
                        // All ES version on top of the NULL backend
                        ES2_NULL(),
                        ES3_NULL(),
-                       ES31_NULL());
-}
+                       ES31_NULL(),
+
+                       // ES on top of Vulkan
+                       ES2_VULKAN(),
+                       ES3_VULKAN());
+}  // anonymous namespace
